@@ -47,19 +47,23 @@ def combine_images(image_paths:list, image_hw:tuple,output_path, grid_hw:tuple,b
     grid_width = width * width_num
     grid_height = height * height_num
     grid = Image.new('RGB', (grid_width, grid_height))
-    if blend_index is not None:
-        blend_index = [(0,0)]*int(height_num* width_num)
 
-    for i, img in enumerate(images):
-        x = (i % width_num) * width
-        y = (i // width_num) * height
-        if blend_index[i] == (0,0):
-            grid.paste(img, (x, y))
-        else:
-            blend_img = Image.blend(images[blend_index[i][0]], images[blend_index[i][1]], blend_alpha)
-            grid.paste(blend_img, (x, y))
+    if blend_index is None:
 
-    
+        blend_index=[]
+        for i in range(height_num* width_num):
+            blend_index.append((i,-1))
+
+    for i in range(height_num* width_num):
+        if i < len(blend_index):
+            x = (i % width_num) * width
+            y = (i // width_num) * height
+            
+                grid.paste(images[blend_index[i][0]], (x, y))
+            else:
+                blend_img = Image.blend(images[blend_index[i][0]], images[blend_index[i][1]], blend_alpha)
+                grid.paste(blend_img, (x, y))
+
     grid.save(output_path)
 
 
@@ -104,3 +108,46 @@ def crop_img(image_path,save_dir,crop_size=1024,stride=512):
             patch = im.crop(box)
             output_path = os.path.join(save_dir, f"{baseneme}_{left}_{top}.png")
             patch.save(output_path)
+
+def npy_to_rgb(input_path, output_path):
+    """
+    将.npy数组文件转换为RGB图像
+    
+    参数:
+        input_path (str): 输入的.npy文件路径
+        output_path (str): 输出的PNG图像文件路径
+    
+    功能:
+        1. 加载.npy文件并验证其形状和数据类型
+        2. 为数组中的每个唯一值生成随机RGB颜色
+        3. 创建RGB图像并保存为PNG格式
+    
+    示例:
+        >>> npy_to_rgb("input.npy", "output.png")
+        Image saved to output.png
+
+    """
+    # 加载npy文件
+    data = np.load(input_path)
+    
+
+    # 获取所有唯一值
+    unique_values = np.unique(data)
+    
+    # 为每个唯一值生成随机RGB颜色
+    color_map = {}
+    for val in unique_values:
+        color_map[val] = (random.randint(0, 255), 
+                         random.randint(0, 255), 
+                         random.randint(0, 255))
+    
+    # 创建RGB图像
+    rgb_array = np.zeros((data.shape[0], data.shape[1], 3), dtype=np.uint8)
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            rgb_array[i,j] = color_map[data[i,j]]
+    
+    # 保存图像
+    img = Image.fromarray(rgb_array)
+    img.save(output_path)
+    print(f"Image saved to {output_path}")
