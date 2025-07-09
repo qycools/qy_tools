@@ -58,7 +58,7 @@ def combine_images(image_paths:list, image_hw:tuple,output_path, grid_hw:tuple,b
         if i < len(blend_index):
             x = (i % width_num) * width
             y = (i // width_num) * height
-            
+            if blend_index[i][1] == -1:
                 grid.paste(images[blend_index[i][0]], (x, y))
             else:
                 blend_img = Image.blend(images[blend_index[i][0]], images[blend_index[i][1]], blend_alpha)
