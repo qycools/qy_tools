@@ -85,9 +85,6 @@ def crop_img(image_path,save_dir,crop_size=1024,stride=512):
     im = Image.open(image_path)
     width, height = im.size
 
-    # 裁剪参数
-    crop_size = 1024 # 裁剪区域大小为1024x1024
-    stride = 512      # 移动步长为512像素
 
     # 计算x方向的起始位置列表
     x_starts = list(range(0, width - crop_size + 1, stride))
