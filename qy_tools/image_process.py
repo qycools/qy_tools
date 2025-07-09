@@ -55,14 +55,15 @@ def combine_images(image_paths:list, image_hw:tuple,output_path, grid_hw:tuple,b
             blend_index.append((i,-1))
 
     for i in range(height_num* width_num):
-        if i < len(blend_index):
-            x = (i % width_num) * width
-            y = (i // width_num) * height
-            if blend_index[i][1] == -1:
-                grid.paste(images[blend_index[i][0]], (x, y))
-            else:
-                blend_img = Image.blend(images[blend_index[i][0]], images[blend_index[i][1]], blend_alpha)
-                grid.paste(blend_img, (x, y))
+        if blend_index[i][0] == -1:
+            continue
+        x = (i % width_num) * width
+        y = (i // width_num) * height
+        if blend_index[i][1] == -1:
+            grid.paste(images[blend_index[i][0]], (x, y))
+        else:
+            blend_img = Image.blend(images[blend_index[i][0]], images[blend_index[i][1]], blend_alpha)
+            grid.paste(blend_img, (x, y))
 
     grid.save(output_path)
 
