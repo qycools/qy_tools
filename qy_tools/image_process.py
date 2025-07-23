@@ -4,29 +4,6 @@ import numpy as np
 
 binary_palette = [255,255,255,255,0,0,0,0,0]
 
-def npy_to_png(data, output_path='demo.png'):
-    '''
-    Args:
-        将二维数组转换为随机RGB图像并保存为PNG文件
-        data: 二维数组
-        output_path: 输出PNG文件路径
-    '''
-    # 获取所有唯一值
-    unique_values = np.unique(data)
-    # 为每个唯一值生成随机RGB颜色
-    color_map = {}
-    for val in unique_values:
-        color_map[val] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-    # 创建RGB图像(uint8类型)
-    h, w = data.shape
-    rgb_image = np.zeros((h, w, 3), dtype=np.uint8)
-    for i in range(h):
-        for j in range(w):
-            rgb_image[i,j] = color_map[data[i,j]]
-    # 保存图像
-    img = Image.fromarray(rgb_image)
-    img.save(output_path)
-
 def combine_images(image_paths:list, image_hw:tuple,output_path, grid_hw:tuple,blend_index=None,blend_alpha=0.25):
     """将多张图片合并为指定网格布局的图片
     
