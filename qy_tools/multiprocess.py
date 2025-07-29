@@ -12,7 +12,26 @@ def _process_wrapper(function, arg, error_files):
         return None
 
 def multipool(function, args, processes=40):
-    """多进程处理函数，简单记录出错的图片路径"""
+    """多进程处理函数，简单记录出错的图片路径
+    
+    Args:
+        function: 要并行执行的函数
+        args: 函数参数列表，每个元素将作为function的参数
+        processes: 进程数，默认为40
+    
+    Returns:
+        None
+    
+    Example:
+        >>> def process_image(image_path):
+        ...     # 模拟图片处理
+        ...     if 'error' in image_path:
+        ...         raise ValueError("处理失败")
+        ...     return f"处理完成: {image_path}"
+        ...
+        >>> image_paths = ['img1.jpg', 'img2.jpg', 'error_img.jpg', 'img4.jpg']
+        >>> multipool(process_image, image_paths, processes=4)
+    """
 
     manager = multiprocessing.Manager()
     error_files = manager.list()  # 共享列表，用于进程间通信
