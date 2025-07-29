@@ -127,25 +127,29 @@ def npy_to_rgb(input_path, output_path):
     """
     # 加载npy文件
     data = np.load(input_path)
-    
+    array_to_rgb(data, output_path)
 
+
+
+def array_to_rgb(data, output_path='demo.png'):
+    '''
+    Args:
+        将二维数组转换为随机RGB图像并保存为PNG文件
+        data: 二维数组
+        output_path: 输出PNG文件路径
+    '''
     # 获取所有唯一值
     unique_values = np.unique(data)
-    
     # 为每个唯一值生成随机RGB颜色
     color_map = {}
     for val in unique_values:
-        color_map[val] = (random.randint(0, 255), 
-                         random.randint(0, 255), 
-                         random.randint(0, 255))
-    
-    # 创建RGB图像
-    rgb_array = np.zeros((data.shape[0], data.shape[1], 3), dtype=np.uint8)
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
-            rgb_array[i,j] = color_map[data[i,j]]
-    
+        color_map[val] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+    # 创建RGB图像(uint8类型)
+    h, w = data.shape
+    rgb_image = np.zeros((h, w, 3), dtype=np.uint8)
+    for i in range(h):
+        for j in range(w):
+            rgb_image[i,j] = color_map[data[i,j]]
     # 保存图像
-    img = Image.fromarray(rgb_array)
+    img = Image.fromarray(rgb_image)
     img.save(output_path)
-    print(f"Image saved to {output_path}")
